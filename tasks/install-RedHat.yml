@@ -1,0 +1,15 @@
+---
+# DB role tasks
+- name: RedHat | Install MongoDB Yum repo
+  template: src={{ ansible_os_family }}/mongo.repo
+            dest=/etc/yum.repos.d/
+            mode=0644
+
+- name: RedHat | Install mongodb
+  yum: name="{{ item }}-{{ mongodb_version }}.*"
+       state=present
+  with_items: mongodb_packages
+
+- name: RedHat | ensure mongodb is running automatically at boot time
+  action: command chkconfig --add mongod
+  notify: mongodb-restart

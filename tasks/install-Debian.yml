@@ -1,0 +1,14 @@
+---
+- name: Debian | Install Mongo Apt key
+  apt_key: keyserver=keyserver.ubuntu.com
+           id=7F0CEB10
+           state=present
+
+- name: Debian | Install MongoDB Deb repo
+  shell: echo "deb http://repo.mongodb.org/apt/debian "$(lsb_release -sc)"/mongodb-org/{{ mongodb_version }} main" | tee /etc/apt/sources.list.d/mongodb-{{ mongodb_version }}.list
+
+- name: Debian | Install mongodb
+  apt: name="{{ item }}={{ mongodb_version }}.*"
+       state=present
+       update_cache=yes
+  with_items: mongodb_packages
